@@ -12,8 +12,8 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    EditText etName, etEmail;
     Button btnAdd, btnRead, btnClear;
+    EditText etName, etEmail;
 
     DBHelper dbHelper;
 
@@ -22,15 +22,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        etName = (EditText) findViewById(R.id.etName);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(this);
+
         btnRead = (Button) findViewById(R.id.btnRead);
         btnRead.setOnClickListener(this);
+
         btnClear = (Button) findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
+
+        etName = (EditText) findViewById(R.id.etName);
+        etEmail = (EditText) findViewById(R.id.etEmail);
 
         dbHelper = new DBHelper(this);
     }
@@ -45,13 +47,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ContentValues contentValues = new ContentValues();
 
+
         switch (v.getId()) {
+
             case R.id.btnAdd:
                 contentValues.put(DBHelper.KEY_NAME, name);
                 contentValues.put(DBHelper.KEY_MAIL, email);
 
                 database.insert(DBHelper.TABLE_CONTACTS, null, contentValues);
                 break;
+
             case R.id.btnRead:
                 Cursor cursor = database.query(DBHelper.TABLE_CONTACTS, null, null, null, null, null, null);
 
@@ -60,24 +65,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME);
                     int emailIndex = cursor.getColumnIndex(DBHelper.KEY_MAIL);
                     do {
-                        Log.d("myLogs", "ID = " + cursor.getInt(idIndex) +
+                        Log.d("mLog", "ID = " + cursor.getInt(idIndex) +
                                 ", name = " + cursor.getString(nameIndex) +
                                 ", email = " + cursor.getString(emailIndex));
                     } while (cursor.moveToNext());
-                } else {
-                    Log.d("myLogs", "0 rows");
-                    cursor.close();
-                    break;
-                }
+                } else
+                    Log.d("mLog","0 rows");
 
+                cursor.close();
                 break;
+
             case R.id.btnClear:
                 database.delete(DBHelper.TABLE_CONTACTS, null, null);
                 break;
-            default:
-                break;
         }
         dbHelper.close();
-
     }
 }
